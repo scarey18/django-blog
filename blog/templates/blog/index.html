@@ -1,0 +1,16 @@
+<link href="http://tutorials.jumpstartlab.com/assets/blogger/screen.css" rel="stylesheet" type="text/css">
+
+<h1>All Articles</h1>
+
+{% if article_list %}
+	<ul>
+		{% for article in article_list %}
+			<li>
+				<a class='article_title' id='article_{{ article.pk }}' href="{% url 'blog:detail' article.pk %}">{{ article.title }}</a>
+			</li>
+		{% endfor %}
+	</ul>
+{% else %}
+	<h2>No articles are available.</h2>
+{% endif %}
+<a class="new_article" href="{% url 'blog:create' %}">Create a new article</a>
