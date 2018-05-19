@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.utils import timezone
-from django.views.generic import ListView, DetailView, CreateView
-from django.urls import reverse
+from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
+from django.urls import reverse, reverse_lazy
 
 from .models import Article
 
@@ -34,3 +34,22 @@ class CreateView(CreateView):
 
 	def get_success_url(self):
 		return reverse('blog:detail', args=(self.object.pk,))
+
+class DeleteView(DeleteView):
+	template_name = 'blog/delete.html'
+	model = Article
+	success_url = reverse_lazy('blog:index')
+
+	def get_queryset(self):
+		return custom_filter()
+
+class EditView(UpdateView):
+	template_name = 'blog/create.html'
+	model = Article
+	fields = ['title', 'body']
+
+	def get_success_url(self):
+		return reverse('blog:detail', args=(self.object.pk,))
+
+	def get_queryset(self):
+		return custom_filter()
