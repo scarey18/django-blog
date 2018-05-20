@@ -60,6 +60,15 @@ def post_comment(request, pk):
 	body = request.POST['body']
 	article = get_object_or_404(Article, pk=pk)
 
+	if author == '' or body == '':
+		context = {
+		'article': article,
+		'error_message': "Please fill out both fields",
+		'author': author,
+		'body': body,
+		}
+		return render(request, 'blog/detail.html', context)
+
 	comment = Comment.objects.create(author=author, body=body, article=article)
 	comment.save()
 
