@@ -1,9 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 from django.urls import reverse, reverse_lazy
+from django.http import HttpResponseRedirect
 
-from .models import Article
+from .models import Article, Comment
 
 def custom_filter():
 	return Article.objects.filter(pub_date__lte=timezone.now())
@@ -53,3 +54,13 @@ class EditView(UpdateView):
 
 	def get_queryset(self):
 		return custom_filter()
+
+def post_comment(request, pk):
+	author = request.POST['author']
+	body = request.POST['body']
+	article = get_object_or_404(Article, pk=pk)
+
+	comment = Comment.objects.create(author=author, body=body, article=article)
+	comment.save()
+
+	return HttpResponseRedirect(reverse('blog:detail', args=(pk,)))
