@@ -4,7 +4,7 @@ from django.views.generic import ListView, DetailView, CreateView, DeleteView, U
 from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
 
-from .models import Article, Comment
+from .models import *
 
 def custom_filter():
 	return Article.objects.filter(pub_date__lte=timezone.now())
@@ -73,3 +73,10 @@ def post_comment(request, pk):
 	comment.save()
 
 	return HttpResponseRedirect(reverse('blog:detail', args=(pk,)))
+
+def tag_view(request, pk):
+	tag = get_object_or_404(Tag, pk=pk)
+	context = {
+		'tag': tag,
+	}
+	return render(request, 'blog/tag.html', context)

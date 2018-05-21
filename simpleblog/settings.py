@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ['192.168.56.102']
 
 INSTALLED_APPS = [
     'blog.apps.BlogConfig',
+    'django.contrib.humanize',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

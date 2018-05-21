@@ -1,13 +1,22 @@
+{% load humanize %}
+
 <link href="http://tutorials.jumpstartlab.com/assets/blogger/screen.css" rel="stylesheet" type="text/css">
 
 <h1>{{ article.title }}</h1>
+<h2>Posted on {{ article.pub_date }}</h2>
+<p>
+	Tags:
+	{% for tagging in article.tagging_set.all %}
+	<a href="{% url 'blog:tag' tagging.tag.pk %}">{{ tagging.tag }}</a>
+	{% endfor %}
+</p>
 <p>{{ article.body }}</p>
 
 <h3>Comments ({{ article.comment_set.count }})</h3>
 {% for comment in article.comment_set.all %}
 	<div>
 		<h4>Comment by {{ comment.author }}</h4>
-		<p>Posted {{ comment.posted_at|timesince }} ago</p>
+		<p>Posted {{ comment.posted_at|naturaltime }} ago</p>
 		<p class="comment">{{ comment.body }}</p>
 	</div>
 {% endfor %}

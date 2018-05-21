@@ -18,3 +18,16 @@ class Comment(models.Model):
 
 	def __str__(self):
 		return self.author
+
+class Tag(models.Model):
+	name = models.CharField(max_length=20)
+
+	def __str__(self):
+		return self.name
+
+class Tagging(models.Model):
+	tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+	article = models.ForeignKey(Article, on_delete=models.CASCADE)
+
+	def __str__(self):
+		return "tag=%s - article=%s" % (self.tag, self.article)
