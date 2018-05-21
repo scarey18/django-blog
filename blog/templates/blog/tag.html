@@ -1,6 +1,6 @@
 <link href="http://tutorials.jumpstartlab.com/assets/blogger/screen.css" rel="stylesheet" type="text/css">
 
-<h1>Tag: {{ tag.name }}</h1>
+<h1>Articles with tag: {{ tag.name }}</h1>
 
 <div>
 {% for tagging in tag.tagging_set.all %}
@@ -9,3 +9,4 @@
 </div>
 
 <a href="{% url 'blog:index' %}">Back to article list</a>
+<a href="{% url 'blog:tag_list' %}">Full tag list</a>

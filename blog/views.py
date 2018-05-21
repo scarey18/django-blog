@@ -16,25 +16,19 @@ class IndexView(ListView):
 	def get_queryset(self):
 		return custom_filter().order_by('-pub_date')
 
+class TagListView(ListView):
+	template_name = 'blog/tag_list.html'
+	context_object_name = 'tag_list'
+
+	def get_queryset(self):
+		return Tag.objects.all()
+
 class DetailView(DetailView):
 	template_name = 'blog/detail.html'
 	model = Article
 
 	def get_queryset(self):
 		return custom_filter()
-
-class CreateView(CreateView):
-	template_name = 'blog/create.html'
-	model = Article
-	fields = ['title', 'body']
-
-	def form_valid(self, form):
-		pub_date = timezone.now()
-		form.instance.pub_date = pub_date
-		return super(CreateView, self).form_valid(form)
-
-	def get_success_url(self):
-		return reverse('blog:detail', args=(self.object.pk,))
 
 class DeleteView(DeleteView):
 	template_name = 'blog/delete.html'
@@ -80,3 +74,56 @@ def tag_view(request, pk):
 		'tag': tag,
 	}
 	return render(request, 'blog/tag.html', context)
+
+def create_view(request):
+	return render(request, 'blog/create.html')
+
+def edit_view(request, pk):
+	return render(request, 'blog/create.html', {'article': Article.objects.get(pk=pk),})
+
+def create_article(request):
+	title = request.POST['title']
+	body = request.POST['body']
+	tags = request.POST['tags'].split(', ')
+
+	article = Article.objects.create(title=title, body=body, pub_date=timezone.now())
+	article.save()
+	for t in tags:
+		tag = None
+		if t in [n.name for n in Tag.objects.all()]:
+			tag = Tag.objects.get(name=t)
+		else:
+			tag = Tag.objects.create(name=t)
+			tag.save()
+		Tagging.objects.create(tag=tag, article=article).save()
+
+	return HttpResponseRedirect(reverse('blog:detail', args=(article.pk,)))
+
+def edit_article(request, pk):
+	title = request.POST['title']
+	body = request.POST['body']
+	tags = request.POST['tags'].split(', ')
+	article = Article.objects.get(pk=pk)
+	taggings = article.tag_list().split(', ')
+	full_tag_list = [t.name for t in Tag.objects.all()]
+
+	article.title = title
+	article.body = body
+	article.save()
+
+	for t in tags:
+		if t not in full_tag_list:
+			tag = Tag.objects.create(name=t)
+			tag.save()
+			Tagging.objects.create(tag=tag, article=article).save()
+		elif t not in taggings:
+			tag = Tag.objects.get(name=t)
+			Tagging.objects.create(tag=tag, article=article).save()
+
+	for t in taggings:
+		if t not in tags:
+			tag = Tag.objects.get(name=t)
+			tagging = Tagging.objects.get(tag=tag, article=article)
+			tagging.delete()
+
+	return HttpResponseRedirect(reverse('blog:detail', args=(article.pk,)))

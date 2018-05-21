@@ -10,6 +10,9 @@ class Article(models.Model):
 	def __str__(self):
 		return self.title
 
+	def tag_list(self):
+		return ', '.join([tagging.tag.name for tagging in self.tagging_set.all()])
+
 class Comment(models.Model):
 	author = models.CharField(max_length=30)
 	body = models.TextField()

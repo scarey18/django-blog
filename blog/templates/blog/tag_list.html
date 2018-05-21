@@ -1,0 +1,18 @@
+<link href="http://tutorials.jumpstartlab.com/assets/blogger/screen.css" rel="stylesheet" type="text/css">
+
+<h1>All Tags</h1>
+
+{% if tag_list %}
+<ul>
+	{% for tag in tag_list %}
+	<li>
+		<a class='article_title' href="{% url 'blog:tag' tag.pk %}">{{ tag.name }}</a>
+	</li>
+	{% endfor %}
+</ul>
+
+{% else %}
+<h2>No tags have been made.</h2>
+{% endif %}
+
+<a class="new_article" href="{% url 'blog:index' %}">Article List</a>

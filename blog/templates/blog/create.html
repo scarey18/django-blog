@@ -1,8 +1,23 @@
 <link href="http://tutorials.jumpstartlab.com/assets/blogger/screen.css" rel="stylesheet" type="text/css">
 
-<form method='post' action="">
+{% if article %}
+<form method='post' action="{% url 'blog:edit_article' article.pk %}">
+{% else %}
+<form method='post' action="{% url 'blog:create_article' %}">
+{% endif %}
 {% csrf_token %}
-	{{ form.as_p }}
+	<p>
+		<label for="id_title">TITLE:</label>
+		<input type="text" name="title" value="{{article.title}}" maxlength="200" id="id_title" required>
+	</p>
+	<p>
+		<label for="id_body">BODY:</label>
+		<textarea name="body" cols="40" rows="10" id="id_body" required>{{article.body}}</textarea>
+	</p>
+	<p>
+		<label for="id_tags">TAGS:</label>
+		<input type="text" name="tags" value="{{article.tag_list}}" id="id_tags" required>
+	</p>
 	<input type='submit' value='Submit'>
 </form>
 
