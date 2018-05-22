@@ -16,7 +16,7 @@
 {% for comment in article.comment_set.all %}
 	<div>
 		<h4>Comment by {{ comment.author }}</h4>
-		<p>Posted {{ comment.posted_at|naturaltime }} ago</p>
+		<p>Posted {{ comment.posted_at|naturaltime }}</p>
 		<p class="comment">{{ comment.body }}</p>
 	</div>
 {% endfor %}
@@ -28,9 +28,9 @@
 <form method="post" action="{% url 'blog:post_comment' article.pk %}">
 	{% csrf_token %}
 	<label for="author">User</label>
-	<input type="text" name="author" value="{{author}}">
+	<input type="text" name="author" value="{{author}}" required>
 	<label for="body">Comment</label>
-	<input type="text" name="body" value="{{body}}">
+	<input type="text" name="body" value="{{body}}" required>
 	<input type="submit" value="Submit">
 </form>
 
